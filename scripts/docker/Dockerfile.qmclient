@@ -1,0 +1,12 @@
+FROM alpine:3.5
+MAINTAINER Mitja Zivkovic <mitjaz@gmail.com>
+
+ARG GITVERSION=development
+ARG GITTAG=development
+ENV GITVERSION=${GITVERSION} GITTAG=${GITTAG}
+
+ADD ./build/qmclient-linux-amd64 /app/qmclient
+
+WORKDIR /app
+
+ENTRYPOINT ["/app/qmclient"]

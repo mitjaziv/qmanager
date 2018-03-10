@@ -1,0 +1,12 @@
+FROM alpine:3.5
+MAINTAINER Mitja Zivkovic <mitjaz@gmail.com>
+
+ARG GITVERSION=development
+ARG GITTAG=development
+ENV GITVERSION=${GITVERSION} GITTAG=${GITTAG}
+
+ADD ./build/qmanager-linux-amd64 /app/qmanager
+
+WORKDIR /app
+
+ENTRYPOINT ["/app/qmanager"]

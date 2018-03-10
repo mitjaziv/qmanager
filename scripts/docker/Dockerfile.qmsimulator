@@ -1,0 +1,12 @@
+FROM alpine:3.5
+MAINTAINER Mitja Zivkovic <mitjaz@gmail.com>
+
+ARG GITVERSION=development
+ARG GITTAG=development
+ENV GITVERSION=${GITVERSION} GITTAG=${GITTAG}
+
+ADD ./build/qmsimulator-linux-amd64 /app/qmsimulator
+
+WORKDIR /app
+
+ENTRYPOINT ["/app/qmsimulator"]

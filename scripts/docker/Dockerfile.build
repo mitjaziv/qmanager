@@ -1,0 +1,6 @@
+FROM golang:1.10
+MAINTAINER Mitja Zivkovic <mitjaz@gmail.com>
+
+RUN go get -u golang.org/x/crypto/bcrypt
+
+WORKDIR /go/src/github.com/mitjaziv/qmanager
