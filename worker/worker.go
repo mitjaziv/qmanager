@@ -19,6 +19,7 @@ type (
 		StartProcessing()
 		Close()
 	}
+	Option func(*worker)
 
 	worker struct {
 		host  string
@@ -27,12 +28,20 @@ type (
 		client  *rpc.Client
 		factory *CallbackFactory
 	}
-
-	Option func(*worker)
+	WorkerFactory func(host string) (*rpc.Client, error)
 )
 
 // NewWorker function creates worker service connected to RPC server and with registered callbacks.
 func NewWorker(factory *CallbackFactory, options ...Option) (Worker, error) {
+	makeWorker := func(host string) (*rpc.Client, error) {
+		return rpc.DialHTTP("tcp", host)
+	}
+	return newWorker(factory, makeWorker, options...)
+}
+
+// newWorker function creates worker service connected to RPC server and with registered callbacks.
+// This function enables you to inject *rpc.Client mock for unit testing.
+func newWorker(factory *CallbackFactory, makeWorker WorkerFactory, options ...Option) (Worker, error) {
 	// Create worker.
 	w := &worker{
 		factory: factory,
@@ -45,7 +54,7 @@ func NewWorker(factory *CallbackFactory, options ...Option) (Worker, error) {
 	}
 
 	// Dial RPC server and add client to worker.
-	if client, err := rpc.DialHTTP("tcp", w.host); err == nil {
+	if client, err := makeWorker(w.host); err == nil {
 		w.client = client
 	} else {
 		return nil, err
